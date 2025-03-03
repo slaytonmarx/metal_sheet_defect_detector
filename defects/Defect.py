@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 from PIL import Image
 
 class Defect():
-    def __init__(self, growth_odds:int = 10, growth_factor:float = .5, initial_growth:int = 1,  size:int = 64, id:int = r.randint(100,999)):
+    def __init__(self, growth_odds:int = 10, growth_factor:float = .5, initial_growth:int = 1,  size:int = 32, id:int = r.randint(100,999)):
         ''''''
         self.id, self.growth_odds, self.growth_factor, self.filename, self.map_filename = id, growth_odds, growth_factor, f'{self.__class__.__name__}_{id}', f'{self.__class__.__name__}_{id}_map', 
         self.frame = r.random((size,size)) # Create our base frame image

@@ -2,18 +2,18 @@ import torch.nn as nn
 import torch
 
 class SheetClassifier(nn.Module):
-    def __init__(self, imsize:int = 64):
+    def __init__(self, conv_size:int = 8, imsize:int = 32):
         super(SheetClassifier, self).__init__()
         self.model = nn.Sequential(
-            nn.Conv2d(1, 8, kernel_size=3, padding=1),
+            nn.Conv2d(1, conv_size, kernel_size=3, padding=1),
             nn.ReLU(),
-            nn.BatchNorm2d(8),
-            nn.Conv2d(8, 16, kernel_size=3, padding=1),
+            nn.BatchNorm2d(conv_size),
+            nn.Conv2d(conv_size, conv_size*2, kernel_size=3, padding=1),
             nn.ReLU(),
-            nn.BatchNorm2d(16)
+            nn.BatchNorm2d(conv_size*2)
             #nn.MaxPool2d(3),
         )
-        self.lin1 = nn.Linear(16*64*64, 3)
+        self.lin1 = nn.Linear(conv_size*2*imsize*imsize, 3)
     
     def get_accuracy(self, yhat, y):
         '''Returns the accuracy of the batch'''
