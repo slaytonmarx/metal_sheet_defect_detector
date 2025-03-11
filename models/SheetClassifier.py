@@ -1,3 +1,4 @@
+from torch.nn import init
 import torch.nn as nn
 import torch
 
@@ -13,6 +14,11 @@ class SheetClassifier(nn.Module):
             nn.BatchNorm2d(conv_size*2)
             #nn.MaxPool2d(3),
         )
+
+        # Initialize Convolutional Modules with Kaiming He's Method
+        # for m in self.model:
+        #     if m.__class__ == nn.Conv2d: init.kaiming_normal_(m.weight, a=0.1)
+
         self.lin1 = nn.Linear(conv_size*2*imsize*imsize, 3)
     
     def get_accuracy(self, yhat, y):
