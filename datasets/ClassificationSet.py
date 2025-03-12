@@ -28,6 +28,7 @@ class ClassificationSet(Dataset):
         files = glob.glob(f'{self.root}/images/*.png')
         for f in files:
             basename = f.split('/')[-1]
+            if '\\' in basename: basename = basename.split('\\')[-1]
             img = self.run_transform(basename)
             img = Image.fromarray((img.numpy()[0]).astype(np.uint8), mode='L')
             img.save(p.join(p.join(transfer_dir, 'images'),basename))
