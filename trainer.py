@@ -20,8 +20,10 @@ class Trainer():
         if is_train: model.train()
         else: model.eval()
 
+        has_acc = hasattr(model, 'get_accuracy')
+        if has_acc: accuracies = []
         for epoch in range(epochs):
-            has_acc = hasattr(model, 'get_accuracy')
+            
             running_loss = 0.0
             running_acc = 0.0
             for i, (x,y) in enumerate(loader):
@@ -47,6 +49,7 @@ class Trainer():
             running_loss += loss.item()
             exp_acc = running_acc / len(loader)
             exp_loss = running_loss / len(loader)
+            accuracies.append(exp_acc)
             if scheduler: scheduler.step()
             if (epoch % 5 == 0 or exp_acc >= .99) and show:
                 msg = f'Epoch [{epoch + 1}/{epochs}], Train Loss: {exp_loss:.2f}'
