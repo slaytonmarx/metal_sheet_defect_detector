@@ -51,7 +51,7 @@ class Trainer():
             exp_loss = running_loss / len(loader)
             accuracies.append(exp_acc)
             if scheduler: scheduler.step()
-            if (epoch % 5 == 0 or exp_acc >= .99) and show:
+            if (epoch % 5 == 0) and show:
                 msg = f'Epoch [{epoch + 1}/{epochs}], Train Loss: {exp_loss:.2f}'
                 if has_acc: msg+=f', Accuracy: {exp_acc:.2f}'
                 print(msg)
