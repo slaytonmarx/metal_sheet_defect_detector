@@ -15,13 +15,17 @@ class ClassificationSet(Dataset):
         self.meta = meta if len(meta)>0 else pd.read_csv(f'{root_dir}/metadata.csv')
         self.len = len(self.meta)
 
-    def transform_pass(self, transfer_dir:str):
+    def transform_pass(self, transfer_dir:str, delete_prior_contents:bool = False):
         '''Loads the data from the main directory and runs our transforms on the files.
             Once we have a good idea of what pre-processing is ideal so we don't have
             to run pre-processessing on every file load.
         '''
         if not p.isdir(transfer_dir): os.mkdir(transfer_dir)
-        files = glob.glob(f'{self.root}/images/*')
+        if delete_prior_contents: 
+            for file in glob.glob(f'{transfer_dir}/images/*.png'):
+                os.remove(file)
+
+        files = glob.glob(f'{self.root}/images/*.png')
         for f in files:
             basename = f.split('/')[-1]
             img = self.run_transform(basename)
