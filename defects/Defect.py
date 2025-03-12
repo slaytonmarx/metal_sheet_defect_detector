@@ -43,10 +43,13 @@ class Defect():
     def save_image(self, time_stamp:int, dir:str) -> None:
         '''Saves the resultant image to the given directory'''
         self.saved_timestamps.append(time_stamp)
-        for p in [(self.filename, self.frame),(self.map_filename, self.map)]:
-            out = f'{dir}/images/{p[0]}_{time_stamp}.png'
-            im = Image.fromarray((p[1]*100).astype(np.uint8), mode='L')
-            im.save(out)
+        out = f'{dir}/images/{self.filename}_{time_stamp}.png'
+        im = Image.fromarray((self.frame*100).astype(np.uint8), mode='L')
+        im.save(out)
+
+        out = f'{dir}/images/{self.map_filename}_{time_stamp}.png'
+        im = Image.fromarray((self.map*100).astype(np.uint8), mode='L')
+        im.save(out)
         
     def row(self) -> pd.DataFrame:
         '''Returns a row with the information of the sample'''
