@@ -1,21 +1,48 @@
-import torchvision.models as models
-import torch.nn as nn
+import logging
 import torch
+import torch.nn as nn
+import torchvision.models as models
+
+# Configure logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 class ResnetClassifier(nn.Module):
+    '''ResNet-based classifier with three output classes.'''
     def __init__(self):
         super(ResnetClassifier, self).__init__()
-        self.model = models.resnet18(pretrained=True)
-        for param in self.model.parameters(): param.requires_grad=False
+        try:
+            self.model = models.resnet18(weights=models.ResNet18_Weights.DEFAULT)
+            
+            # Freeze all pre-trained layers
+            for param in self.model.parameters():
+                param.requires_grad = False
+            
+            # Replace the last fully connected layer
+            in_features = self.model.fc.in_features
+            self.model.fc = nn.Linear(in_features, 3)
+            
+            logging.info("ResnetClassifier initialized successfully.")
 
-        # Replace the last layer of the net with our own (if we wanted to replace it with multiple layers we could use nn.Seqeuntial)
-        self.model.fc = nn.Linear(512, 3)
-    
+        except Exception as e:
+            logging.error(f"Error initializing ResnetClassifier: {e}", exc_info=True)
+
     def get_accuracy(self, yhat, y):
-        '''Returns the accuracy of the batch'''
-        return 1 - abs(torch.argmax(yhat,dim=1) - y).clip(0,1).sum()/len(yhat)
+        '''Computes the accuracy of a batch.'''
+        try:
+            correct_predictions = (torch.argmax(yhat, dim=1) == y).sum().item()
+            accuracy = correct_predictions / y.size(0)
+            return accuracy
+        
+        except Exception as e:
+            logging.error(f"Error computing accuracy: {e}", exc_info=True)
+            return 0.0
 
     def forward(self, x):
-        x = self.model(x)
-        #x = self.lin1(x.view(x.shape[0],-1))
-        return x
+        '''Defines the forward pass.'''
+        try:
+            return self.model(x)
+        
+        except Exception as e:
+            logging.error(f"Error in forward pass: {e}", exc_info=True)
+            return None
+
